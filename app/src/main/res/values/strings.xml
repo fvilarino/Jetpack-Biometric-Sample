@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Biometric Prompt Sample</string>
+    <string name="pin_biometric_prompt_title">Login</string>
+    <string name="pin_biometric_prompt_description">Log in using your biometric credential</string>
+    <string name="pin">PIN</string>
+    <string name="pin_biometric_error">Authentication failed: %1$s</string>
+    <string name="pin_biometric_fatal_error">Authentication failed</string>
+    <string name="main_content">Main content</string>
+    <string name="content_desc_toggle_password_visibility">Toggle password visibility</string>
+</resources>
