@@ -12,12 +12,7 @@ private const val CorrectPin = "1234"
 @HiltViewModel
 class MainViewModel @Inject constructor(
 ) : MviViewModel<MainState, MainEvent, MainMviIntent, MainReduceAction>(
-    MainState(
-        loadState = LoadState.SHOW_PIN,
-        pin = "",
-        pinButtonEnabled = false,
-        pinError = false,
-    )
+    MainState.initial
 ), PinCallbacks, DefaultLifecycleObserver {
 
     private val unlockPin = CorrectPin
@@ -33,7 +28,7 @@ class MainViewModel @Inject constructor(
                         )
                     )
             }
-            MainMviIntent.PinUnlockRequested -> if (currentState.pin == unlockPin) {
+            MainMviIntent.PinUnlockRequested -> if (currentState.pinState.pin == unlockPin) {
                 handle(MainReduceAction.Unlock)
             } else {
                 handle(MainReduceAction.PinError)
@@ -45,40 +40,40 @@ class MainViewModel @Inject constructor(
 
     override fun reduce(state: MainState, reduceAction: MainReduceAction): MainState =
         when (reduceAction) {
-            is MainReduceAction.Loaded -> state.copy(
-                loadState = if (reduceAction.showPin) {
-                    LoadState.SHOW_PIN
-                } else {
-                    LoadState.SHOW_CONTENT
-                }
-            )
             is MainReduceAction.PinUpdated -> state.copy(
-                pin = reduceAction.pin,
-                pinButtonEnabled = reduceAction.buttonEnabled,
-                pinError = false,
+                pinState = state.pinState.copy(
+                    pin = reduceAction.pin,
+                    pinButtonEnabled = reduceAction.buttonEnabled,
+                    pinError = false,
+                ),
             )
-            MainReduceAction.PinError -> state.copy(pinError = true)
+            MainReduceAction.PinError -> state.copy(
+                pinState = state.pinState.copy(
+                    pinError = true,
+                )
+            )
             MainReduceAction.Unlock -> state.copy(
                 loadState = LoadState.SHOW_CONTENT,
-                pin = "",
-                pinError = false,
+                pinState = state.pinState.copy(
+                    pin = "",
+                    pinError = false,
+                ),
             )
             MainReduceAction.Lock -> state.copy(
                 loadState = LoadState.SHOW_PIN,
-            )
-            MainReduceAction.OnShowPin -> state.copy(
-                loadState = LoadState.SHOW_PIN,
-                pin = "",
-                pinButtonEnabled = false,
-                pinError = false,
+                pinState = state.pinState.copy(
+                    pin = "",
+                    pinButtonEnabled = false,
+                    pinError = false,
+                ),
             )
         }
 
-    override fun onPinUpdated(pin: String) = onIntent(MainMviIntent.PinUpdated(pin))
+    override fun onPinChange(pin: String) = onIntent(MainMviIntent.PinUpdated(pin))
 
-    override fun onPinUnlockRequested() = onIntent(MainMviIntent.PinUnlockRequested)
+    override fun onPinUnlockClick() = onIntent(MainMviIntent.PinUnlockRequested)
 
-    override fun onBiometricUnlock() = onIntent(MainMviIntent.BiometricUnlock)
+    fun onBiometricUnlock() = onIntent(MainMviIntent.BiometricUnlock)
 
-    override fun onBackground() = onIntent(MainMviIntent.OnBackground)
+    fun onBackground() = onIntent(MainMviIntent.OnBackground)
 }

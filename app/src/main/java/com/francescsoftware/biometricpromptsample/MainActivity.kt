@@ -7,25 +7,14 @@ import androidx.activity.viewModels
 import androidx.biometric.BiometricPrompt
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.FragmentActivity
 import com.francescsoftware.biometricpromptsample.ui.theme.BiometricPromptSampleTheme
-import com.francescsoftware.biometricpromptsample.ui.theme.MarginDouble
 import dagger.hilt.android.AndroidEntryPoint
 
 private val biometricsIgnoredErrors = listOf(
@@ -46,16 +35,18 @@ class MainActivity : FragmentActivity() {
             val state: State<MainState> = viewModel.state.collectAsState()
             BiometricPromptSampleTheme {
                 Surface(Modifier.background(MaterialTheme.colors.background)) {
+                    LaunchedEffect(key1 = state.value.loadState) {
+                        if (state.value.loadState == LoadState.SHOW_PIN) {
+                            showBiometricPrompt()
+                        }
+                    }
                     Crossfade(
                         targetState = state.value.loadState
                     ) { loadState ->
                         when (loadState) {
                             LoadState.SHOW_PIN -> {
-                                LaunchedEffect(key1 = loadState) {
-                                    showBiometricPrompt()
-                                }
                                 PinScreen(
-                                    state.value,
+                                    state.value.pinState,
                                     viewModel
                                 )
                             }
@@ -106,25 +97,12 @@ class MainActivity : FragmentActivity() {
                 override fun onAuthenticationFailed() {
                     Toast.makeText(
                         this@MainActivity,
-                        R.string.pin_biometric_fatal_error,
+                        R.string.pin_biometric_authentication_error,
                         Toast.LENGTH_LONG
                     ).show()
                 }
             }
         )
         biometricPrompt.authenticate(promptInfo)
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    BiometricPromptSampleTheme {
-        Greeting("Android")
     }
 }

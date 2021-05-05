@@ -5,6 +5,12 @@ import com.francescsoftware.biometricpromptsample.mvi.MviIntent
 import com.francescsoftware.biometricpromptsample.mvi.ReduceAction
 import com.francescsoftware.biometricpromptsample.mvi.State
 
+data class PinState(
+    val pin: String,
+    val pinButtonEnabled: Boolean,
+    val pinError: Boolean,
+)
+
 enum class LoadState {
     SHOW_PIN,
     SHOW_CONTENT,
@@ -12,10 +18,19 @@ enum class LoadState {
 
 data class MainState(
     val loadState: LoadState,
-    val pin: String,
-    val pinButtonEnabled: Boolean,
-    val pinError: Boolean,
-) : State
+    val pinState: PinState,
+) : State {
+    companion object {
+        val initial = MainState(
+            loadState = LoadState.SHOW_PIN,
+            pinState = PinState(
+                pin = "",
+                pinButtonEnabled = false,
+                pinError = false,
+            ),
+        )
+    }
+}
 
 sealed class MainEvent : Event
 
@@ -27,10 +42,8 @@ sealed class MainMviIntent : MviIntent {
 }
 
 sealed class MainReduceAction : ReduceAction {
-    data class Loaded(val showPin: Boolean) : MainReduceAction()
     data class PinUpdated(val pin: String, val buttonEnabled: Boolean) : MainReduceAction()
     object Lock : MainReduceAction()
     object Unlock : MainReduceAction()
     object PinError : MainReduceAction()
-    object OnShowPin : MainReduceAction()
 }
