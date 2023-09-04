@@ -4,6 +4,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -36,6 +37,7 @@ fun PasswordTextField(
     enabled: Boolean = true,
     isError: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     label: @Composable (() -> Unit)? = null,
     colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors()
 ) {
@@ -52,6 +54,7 @@ fun PasswordTextField(
         enabled = enabled,
         isError = isError,
         keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         label = label,
         colors = colors,
     )
@@ -67,6 +70,7 @@ fun PasswordTextField(
     enabled: Boolean = true,
     isError: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     label: @Composable (() -> Unit)? = null,
     colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors()
 ) {
@@ -77,6 +81,7 @@ fun PasswordTextField(
         isError = isError,
         singleLine = true,
         keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         visualTransformation = if (passwordVisible) {
             VisualTransformation.None
         } else {
@@ -88,6 +93,7 @@ fun PasswordTextField(
             ) {
                 Crossfade(
                     targetState = passwordVisible,
+                    label = "password_visibility",
                 ) { visible ->
                     Icon(
                         painter = painterResource(
@@ -119,7 +125,9 @@ private fun PasswordTextFieldPreview() {
             PasswordTextField(
                 value = value,
                 onValueChange = { newValue -> value = newValue },
-                modifier = Modifier.fillMaxWidth().padding(all = MarginDouble),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(all = MarginDouble),
                 label = { Text(text = "PIN") },
             )
         }
