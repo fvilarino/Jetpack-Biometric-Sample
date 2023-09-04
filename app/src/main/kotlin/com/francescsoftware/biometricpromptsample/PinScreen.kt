@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -50,6 +51,11 @@ fun PinScreen(
                 onValueChange = { value -> pinCallbacks.onPinChange(value) },
                 label = { Text(text = stringResource(id = R.string.pin)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        pinCallbacks.onPinUnlockClick()
+                    }
+                ),
                 isError = state.pinError,
             )
             Spacer(modifier = Modifier.height(MarginQuad))

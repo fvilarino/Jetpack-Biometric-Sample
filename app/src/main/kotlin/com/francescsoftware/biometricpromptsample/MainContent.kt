@@ -24,8 +24,12 @@ fun MainContent() {
                 )
             }
         },
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues = padding)
+        ) {
             Text(
                 text = stringResource(id = R.string.main_content),
                 style = MaterialTheme.typography.h4,
