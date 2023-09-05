@@ -1,0 +1,21 @@
+name: Main - Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Build the app
+        run: ./gradlew buildRelease --stacktrace
